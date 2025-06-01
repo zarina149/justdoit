@@ -8,6 +8,15 @@
     <style>
       .bg-terracotta { background-color: #E2725B; }
       .text-terracotta { color: #E2725B; }
+      .confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 9999;
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
@@ -54,10 +63,30 @@
     <section id="signup" class="px-6 py-16 bg-orange-50 text-center">
       <h2 class="text-3xl font-bold mb-4 text-terracotta">Ready to be Emotionally Bullied Into Growth?</h2>
       <p class="mb-6 text-gray-700">Drop your email. We’ll take it from here.</p>
-      <form class="flex flex-col items-center space-y-4">
-        <input type="email" placeholder="Your email" class="px-4 py-2 rounded border border-gray-300 w-64" />
-        <button class="bg-terracotta hover:bg-red-400 text-white py-2 px-6 rounded-full">Get Early Access</button>
+      <form name="early-access" method="POST" data-netlify="true" action="/?success=true" class="flex flex-col items-center space-y-4">
+        <input type="hidden" name="form-name" value="early-access" />
+        <input type="email" name="email" placeholder="Your email" class="px-4 py-2 rounded border border-gray-300 w-64" required />
+        <button type="submit" class="bg-terracotta hover:bg-red-400 text-white py-2 px-6 rounded-full">Get Early Access</button>
+        <p class="text-green-600 hidden" id="successMessage">Thanks for signing up. See you in your inbox soon, you glorious mess.</p>
       </form>
+      <canvas id="confettiCanvas" class="confetti hidden"></canvas>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <script>
+        if (window.location.search.includes('success=true')) {
+          const msg = document.getElementById('successMessage');
+          const confettiCanvas = document.getElementById('confettiCanvas');
+          if (msg && confettiCanvas) {
+            msg.classList.remove('hidden');
+            confettiCanvas.classList.remove('hidden');
+            const myConfetti = confetti.create(confettiCanvas, { resize: true });
+            myConfetti({
+              particleCount: 150,
+              spread: 70,
+              origin: { y: 0.6 },
+            });
+          }
+        }
+      </script>
     </section>
   </body>
 </html>
